@@ -1,4 +1,4 @@
-/* arch/arm/boot/dts/pxa1088-degaswifi-r01.dts
+/* arch/arm/boot/dts/pxa1088-degaswifiusa-r01.dts
  * Copyright (C) 2014 Samsung Electronics Co, Ltd.
  *
  * Based on arch/arm/boot/dts/pxa1088-degaswifi-r01.dts
@@ -28,7 +28,7 @@
 / {
 	model = "Samsung Degaswifi board based on PXA1088";
 	compatible = "mrvl,pxa1088-sec", "mrvl,pxa1088";
-	pxa,rev-id = <MACH_TYPE_DEGASWIFI 1>;
+	pxa,rev-id = <MACH_TYPE_DEGASWIFIUSA 1>;
 
 	aliases {
 		i2c7 = &muici2c;
@@ -203,13 +203,13 @@
 				bus-width = <8>;
 				non-removable;
 				marvell,sdh-pm-runtime-en;
-				marvell,sdh-quirks = <(SDHCI_QUIRK_BROKEN_CARD_DETECTION)>;
+				marvell,sdh-quirks = <(
+						SDHCI_QUIRK_BROKEN_ADMA |
+						SDHCI_QUIRK_BROKEN_CARD_DETECTION
+						)>;
 				marvell,sdh-quirks2 = <(SDHCI_QUIRK2_BUS_CLK_GATE_ENABLED)>;
 				marvell,sdh-host-caps = <(MMC_CAP_1_8V_DDR)>;
-				marvell,sdh-host-caps2 = <(
-							MMC_CAP2_DISABLE_BLK_ASYNC |
-							MMC_CAP2_CACHE_CTRL
-						)>;
+				marvell,sdh-host-caps2 = <(MMC_CAP2_CACHE_CTRL)>;
 				marvell,sdh-flags = <(
 						PXA_FLAG_SD_8_BIT_CAPABLE_SLOT |
 						PXA_FLAG_ENABLE_CLOCK_GATING |
@@ -499,13 +499,13 @@
 						DF_RDY1 AF0
 						DF_nCS0_SM_nCS2 AF1
 						DF_nCS1_SM_nCS3 AF1
-						SM_nCS0 AF1
-						SM_nCS1 AF1
+						/*SM_nCS0 AF1*/
+						/*SM_nCS1 AF1*/
 						GPIO52 AF0
 						GPIO96 AF0
-						GPIO98 AF0
+						/*GPIO98 AF0*/
 						GPIO123 AF1
-						SM_BE0 AF0
+						/*SM_BE0 AF0*/
 						VCXO_REQ AF1
 					>;
 					PULL_UP;LPM_FLOAT;
@@ -732,7 +732,7 @@
 						GPIO27 AF1
 						GPIO28 AF1
 					>;
-					MFP_DEFAULT;
+					MFP_PULL_UP;
 				};
 
 				gssp_gpio: gssp_gpio {
@@ -949,10 +949,15 @@
 				};
 				mc96irda_gpio_pmx: mc96irda_gpio_pmx {
 					pinctrl-single,pins = <
-						SM_nCS0 AF1 /*IRDA_LED_EN*/
 						GPIO98 AF0 /*IRDA_WAKE*/
 					>;
 					MFP_LPM_DRIVE_LOW;
+				};
+				mc96irda_led_en_pmx: mc96irda_led_en_pmx {
+					pinctrl-single,pins = <
+						SM_nCS0 AF1 /*IRDA_LED_EN*/
+					>;
+					DS_MEDIUM;PULL_DOWN;EDGE_NONE;LPM_DRIVE_LOW;
 				};
 				mc96irda_irq_pmx: mc96irda_irq_pmx {
 					pinctrl-single,pins = <
@@ -1188,7 +1193,7 @@
                 mc96fr116c@50 {
                         compatible = "mc96fr116c,i2c";
 			pinctrl-names = "default";
-			pinctrl-0 = <&mc96irda_gpio_pmx &mc96irda_irq_pmx>;
+			pinctrl-0 = <&mc96irda_gpio_pmx &mc96irda_irq_pmx &mc96irda_led_en_pmx>;
                         reg = <0x50>;
 			vled_ic_1.9v-supply;
                         mc96fr116c,irda_irq_gpio = <&gpio 104 0x00>;
