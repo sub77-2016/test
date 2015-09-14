@@ -1,0 +1,12 @@
+
+#
+# Top-level generic files
+#
+/drm
+/egl
+/hw 
+/modules
+/soundfx
+/ssl
+
+
