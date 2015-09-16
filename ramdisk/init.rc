@@ -29,6 +29,10 @@ on early-init
 
     start ueventd
 
+service set_permissive /sbin/toolbox setenforce 0
+    oneshot
+    seclabel u:r:recovery:s
+
     # create mountpoints
     mkdir /mnt 0775 root system
 
@@ -563,6 +567,7 @@ service surfaceflinger /system/bin/surfaceflinger
     class core
     user system
     group graphics drmrpc
+    ioprio rt 6
     onrestart restart zygote
 
 service drm /system/bin/drmserver
